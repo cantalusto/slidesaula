@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação: Chatbot WhatsApp com IA</title>
+    <!-- O estilo define a aparência da apresentação --><style>
+        :root {
+            --cor-fundo: #111827; /* Azul-escuro quase preto */
+            --cor-cartao: #1F2937; /* Cinza-azulado escuro */
+            --cor-texto: #F3F4F6; /* Cinza claro */
+            --cor-cabecalho: #FFFFFF;
+            --cor-primaria: #34D399; /* Verde (WAHA/Sucesso) */
+            --cor-secundaria: #60A5FA; /* Azul (n8n) */
+            --cor-acento: #F472B6; /* Rosa (Gemini) */
+            --fonte-principal: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --sombra-cartao: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: var(--fonte-principal);
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            overflow: hidden; /* Evita barras de rolagem */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* O contêiner principal da apresentação */
+        .container-apresentacao {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Estilo de cada slide */
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            box-sizing: border-box;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            /* Transição suave entre slides */
+            transition: opacity 0.6s ease-in-out, visibility 0.6s;
+            background-color: var(--cor-fundo);
+        }
+
+        /* O slide ativo (visível) */
+        .slide.ativo {
+            opacity: 1;
+            visibility: visible;
+            z-index: 1;
+        }
+
+        /* O conteúdo dentro do slide */
+        .conteudo-slide {
+            background-color: var(--cor-cartao);
+            border-radius: 16px; /* Bordas bem arredondadas */
+            padding: 2.5rem 3.5rem;
+            width: 90%;
+            max-width: 1000px;
+            min-height: 450px;
+            box-shadow: var(--sombra-cartao);
+            border-top: 5px solid var(--cor-primaria);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Títulos */
+        h1, h2, h3 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 { /* Título do slide */
+            font-size: 2.25rem;
+            color: var(--cor-cabecalho);
+            border-bottom: 2px solid var(--cor-secundaria);
+            padding-bottom: 0.75rem;
+            margin-top: 0;
+        }
+
+        h2 { /* Subtítulo/Objetivo */
+            font-size: 1.25rem;
+            color: var(--cor-acento);
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        /* Lista de passos */
+        ul {
+            list-style: none;
+            padding-left: 0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Marcador da lista personalizado */
+        li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--cor-primaria);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        li strong {
+            color: var(--cor-secundaria);
+            font-weight: 600;
+        }
+        
+        li code {
+            color: var(--cor-acento);
+        }
+
+        /* Bloco de código */
+        pre {
+            background-color: #111827;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 1rem;
+            border: 1px solid #374151;
+        }
+        
+        pre code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #E5E7EB;
+        }
+
+        /* Estilo especial para o slide de título */
+        .slide-titulo .conteudo-slide {
+            border-top: 5px solid var(--cor-acento);
+            text-align: center;
+            justify-content: center;
+            /* Adicionado para centralizar itens flex */
+            align-items: center; 
+        }
+
+        .slide-titulo h1 {
+            font-size: 3.5rem;
+            color: var(--cor-cabecalho);
+            border: none;
+            margin-top: 0; /* Remove margem superior padrão */
+            margin-bottom: 0.5rem; /* Ajusta espaçamento inferior */
+        }
+
+        .slide-titulo h2 {
+            font-size: 1.5rem;
+            color: var(--cor-texto);
+            font-weight: 300;
+            margin-top: 0.5rem; /* Ajuste para espaçamento */
+            margin-bottom: 1rem;
+        }
+
+        .slide-titulo .info-equipe {
+            margin-top: 2rem;
+            font-size: 1.1rem;
+            color: #A0AEC0; /* Um cinza mais claro para informações adicionais */
+        }
+
+        .slide-titulo .info-equipe strong {
+            color: var(--cor-primaria);
+        }
+
+        .slide-titulo img.logo {
+            max-width: 400px; /* Tamanho máximo da logo */
+            height: auto;
+            margin-bottom: 2rem; /* Espaçamento da logo para o título */
+            /* Propriedades para centralizar a imagem */
+            display: block; /* Garante que a imagem se comporta como um bloco */
+            margin-left: auto; /* Centraliza horizontalmente */
+            margin-right: auto; /* Centraliza horizontalmente */
+        }
+
+        /* Botões de navegação */
+        .btn-nav {
+            position: fixed;
+            z-index: 10;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none; /* Impede a seleção de texto */
+        }
+        
+        .btn-nav:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        #btn-anterior {
+            left: 20px;
+        }
+
+        #btn-proximo {
+            right: 20px;
+        }
+        
+        /* Contador de slides */
+        .contador-slides {
+            position: fixed;
+            z-index: 10;
+            bottom: 20px;
+            right: 30px;
+            background-color: var(--cor-cartao);
+            color: var(--cor-texto);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            box-shadow: var(--sombra-cartao);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- O contêiner principal que segura todos os slides --><div class="container-apresentacao">
+        
+        <!-- Slide 1: Título (com logo e equipe) --><div class="slide slide-titulo ativo" data-slide="1">
+            <div class="conteudo-slide">
+                <img src="DigitalNest - logo.png" alt="Logo DigitalNest" class="logo">
+                <h1>Criando um Chatbot de WhatsApp com IA</h1>
+                <h2>Usando n8n, WAHA (Docker) e Google Gemini</h2>
+                <div class="info-equipe">
+                    Realizado pela equipe <strong>DigitalNest</strong><br>
+                    Autor: Lucas Cantarelli
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Setup do Ambiente (Docker) --><div class="slide" data-slide="2">
+            <div class="conteudo-slide">
+                <h1>🏗️ 1. Setup do Ambiente (Docker)</h1>
+                <h2>Objetivo: Preparar os serviços de base.</h2>
+                <ul>
+                    <li>Baixar e instalar o <strong>Docker Desktop</strong>.</li>
+                    <li>Obter o arquivo <code>docker-compose.yml</code> (contém n8n, WAHA, Redis).</li>
+                    <li>Criar uma pasta dedicada para o projeto.</li>
+                    <li>Mover o <code>docker-compose.yml</code> para dentro desta pasta.</li>
+                    <li>Abrir o terminal na pasta e executar:</li>
+                </ul>
+                <pre><code>docker compose up -d</code></pre>
+            </div>
+        </div>
+
+        <!-- Slide 3: Configuração do WAHA (WhatsApp) --><div class="slide" data-slide="3">
+            <div class="conteudo-slide">
+                <h1>💬 2. Configuração do WAHA (WhatsApp)</h1>
+                <h2>Objetivo: Conectar seu número de WhatsApp.</h2>
+                <ul>
+                    <li>Abrir o Docker Desktop e acessar o link do <strong>WAHA</strong> (<code>http://localhost:3000</code>).</li>
+                    <li>No WAHA, navegar até o <strong>Dashboard</strong>.</li>
+                    <li>Iniciar um novo serviço (sessão).</li>
+                    <li>Conectar seu WhatsApp lendo o <strong>QR Code</strong> exibido.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 4: Configuração do n8n (Automação) --><div class="slide" data-slide="4">
+            <div class="conteudo-slide">
+                <h1>⚙️ 3. Configuração do n8n (Automação)</h1>
+                <h2>Objetivo: Preparar a plataforma de automação.</h2>
+                <ul>
+                    <li>Acessar o link do <strong>n8n</strong> (<code>http://localhost:5678</code>).</li>
+                    <li>Criar sua conta de administrador e validar o e-mail.</li>
+                    <li>No n8n, ir em <strong>Settings > Community Nodes</strong>.</li>
+                    <li>Instalar o node: <code>n8n-nodes-waha</code>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 5: Criando o Gatilho (Webhook) --><div class="slide" data-slide="5">
+            <div class="conteudo-slide">
+                <h1>🔌 4. Criando o Gatilho (Webhook)</h1>
+                <h2>Objetivo: Criar o ponto de entrada para as mensagens.</h2>
+                <ul>
+                    <li>No n8n, criar um novo Workflow (do zero).</li>
+                    <li>Adicionar o primeiro nó: <strong>Webhook</strong>.</li>
+                    <li>Configurar o Webhook:</li>
+                    <ul>
+                        <li><strong>HTTP Method:</strong> <code>POST</code></li>
+                        <li><strong>Path:</strong> <code>webhook</code> (ou um nome de sua preferência)</li>
+                    </ul>
+                    <li>Copiar a <strong>URL de Teste (Test URL)</strong> gerada.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 6: Conectando WAHA ao n8n --><div class="slide" data-slide="6">
+            <div class="conteudo-slide">
+                <h1>🔗 5. Conectando WAHA ao n8n</h1>
+                <h2>Objetivo: Fazer o WAHA enviar os eventos para o n8n.</h2>
+                <ul>
+                    <li>Voltar ao Dashboard do <strong>WAHA</strong>.</li>
+                    <li>Nas configurações da sua sessão, adicionar um <strong>Webhook</strong>.</li>
+                    <li>Colar a <strong>URL de Teste</strong> do n8n no campo apropriado.</li>
+                    <li>Clicar em <strong>Events</strong> e desmarcar <code>session.status</code> (para evitar tráfego desnecessário).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 7: Testando a Conexão --><div class="slide" data-slide="7">
+            <div class="conteudo-slide">
+                <h1>🧪 6. Testando a Conexão</h1>
+                <h2>Objetivo: Garantir que as mensagens estão chegando no n8n.</h2>
+                <ul>
+                    <li>No n8n, clique em "Listen for Test Event" no nó Webhook.</li>
+                    <li>Envie uma mensagem de outro número para o WhatsApp conectado.</li>
+                    <li>Você deverá ver os dados da mensagem chegando no n8n.</li>
+                    <li><strong>Importante:</strong> Clique em <strong>"Pin" (Fixar)</strong> no output recebido para usar os dados nos próximos nós.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 8: Organizando os Dados (Nó "Set") --><div class="slide" data-slide="8">
+            <div class="conteudo-slide">
+                <h1>🧹 7. Organizando os Dados (Nó "Set")</h1>
+                <h2>Objetivo: Extrair e nomear as informações importantes.</h2>
+                <ul>
+                    <li>Adicionar um nó <strong>Edit Fields (Set)</strong> e renomeá-lo para "Dados".</li>
+                    <li>Mapear os campos usando os dados "fixados" do Webhook:</li>
+                    <ul>
+                        <li><code>session</code> (de <code>body</code>)</li>
+                        <li><code>chatid</code> (de <code>body.payload.from</code>)</li>
+                        <li><code>pushName</code> (de <code>body.data</code>)</li>
+                        <li><code>payload_id</code> (de <code>body.payload.id</code>)</li>
+                        <li><code>event</code> (de <code>body</code>)</li>
+                        <li><code>message</code> (de <code>body.message</code>)</li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 9: Filtrando Mensagens (Nó "Switch") --><div class="slide" data-slide="9">
+            <div class="conteudo-slide">
+                <h1>🚦 8. Filtrando Mensagens (Nó "Switch")</h1>
+                <h2>Objetivo: Só responder a mensagens de texto recebidas.</h2>
+                <ul>
+                    <li>Adicionar um nó <strong>Switch</strong>.</li>
+                    <li>Configurar a Regra 1:</li>
+                    <ul>
+                        <li><strong>Input:</strong> Arraste o campo <code>event</code> (do nó "Dados").</li>
+                        <li><strong>Operation:</strong> <code>is equal to</code></li>
+                        <li><strong>Value:</strong> <code>message</code></li>
+                    </ul>
+                    <li>(O workflow só continuará pela saída "output 0").</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 10: Configurando a IA (AI Agent - Parte 1) --><div class="slide" data-slide="10">
+            <div class="conteudo-slide">
+                <h1>🧠 9. Configurando a IA (AI Agent - Parte 1)</h1>
+                <h2>Objetivo: Adicionar o cérebro do chatbot.</h2>
+                <ul>
+                    <li>Conectar um nó <strong>AI Agent</strong> na saída do Switch.</li>
+                    <li><strong>Source for Prompt:</strong> Mudar para <code>Define below</code>.</li>
+                    <li><strong>Prompt (User Message):</strong> Arrastar o campo <code>message</code> (do nó "Dados").</li>
+                    <li><strong>Add Option > System Message:</strong> Criar seu prompt de sistema (Ex: "Você é um assistente virtual...").</li>
+                    <li><strong>Chat Model:</strong> Selecionar <strong>Google Gemini</strong>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 11: Configurando a IA (AI Agent - Parte 2) --><div class="slide" data-slide="11">
+            <div class="conteudo-slide">
+                <h1>🔑 10. Configurando a IA (AI Agent - Parte 2)</h1>
+                <h2>Objetivo: Conectar o Gemini e ajustar os parâmetros.</h2>
+                <ul>
+                    <li><strong>Credential to connect with:</strong></li>
+                    <ul>
+                        <li>Criar uma nova credencial.</li>
+                        <li>Ir ao <strong>Google AI Studio</strong> e gerar sua <strong>API Key</strong>.</li>
+                        <li>Colar a API Key no n8n.</li>
+                    </ul>
+                    <li><strong>Model:</strong> Escolher (ex: <code>gemini-1.5-flash</code>).</li>
+                    <li><strong>Options (Opcional):</strong></li>
+                    <ul>
+                        <li><code>Sampling Temperature</code>: <code>0.4</code> (Reduz alucinações).</li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 12: Configurando a Memória (Redis) --><div class="slide" data-slide="12">
+            <div class="conteudo-slide">
+                <h1>📚 11. Configurando a Memória (Redis)</h1>
+                <h2>Objetivo: Fazer a IA lembrar do histórico da conversa.</h2>
+                <ul>
+                    <li>No nó AI Agent, ir para <strong>Memory</strong> e adicionar <strong>Redis Chat Memory</strong>.</li>
+                    <li><strong>Credential to connect with (Redis):</strong></li>
+                    <ul>
+                        <li><code>Password</code>: <code>default</code></li>
+                        <li><code>User</code>: (deixar em branco)</li>
+                        <li><code>Host</code>: <code>host.docker.internal</code> (Crucial!)</li>
+                    </ul>
+                    <li><strong>Session ID:</strong> Mudar para <code>Define below</code>.</li>
+                    <li><strong>Key:</strong> Arrastar o <code>chatid</code> (do nó "Dados").</li>
+                    <li><strong>Session Time To Live:</strong> <code>3600</code> (1 hora).</li>
+                    <li><strong>Context Window Length:</strong> <code>10</code> (mensagens).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 13: Enviando "Visto" (WAHA Send Seen) --><div class="slide" data-slide="13">
+            <div class="conteudo-slide">
+                <h1>👁️ 12. Enviando "Visto" (WAHA Send Seen)</h1>
+                <h2>Objetivo: Marcar a mensagem como lida.</h2>
+                <ul>
+                    <li>Adicionar um nó <strong>WAHA > Send Seen</strong>.</li>
+                    <li><strong>Credential:</strong></li>
+                    <ul>
+                        <li><code>Host URL</code>: <code>http://host.docker.internal:3000</code></li>
+                    </ul>
+                    <li>Mapear os dados (arrastando do nó "Dados"):</li>
+                    <ul>
+                        <li><code>Session</code>: <code>session</code></li>
+                        <li><code>Chat Id</code>: <code>chatid</code></li>
+                        <li><code>Message Id</code>: <code>payload_id</code></li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 14: Enviando a Resposta (WAHA Send Text) --><div class="slide" data-slide="14">
+            <div class="conteudo-slide">
+                <h1>📤 13. Enviando a Resposta (WAHA Send Text)</h1>
+                <h2>Objetivo: Enviar a mensagem da IA ao usuário.</h2>
+                <ul>
+                    <li>Adicionar um nó <strong>WAHA > Send a text message</strong>.</li>
+                    <li>A credencial do WAHA já deve estar selecionada.</li>
+                    <li>Mapear os dados:</li>
+                    <ul>
+                        <li><code>Session</code>: Arrastar <code>session</code> (do nó "Dados").</li>
+                        <li><code>Chat Id</code>: Arrastar <code>chatid</code> (do nó "Dados").</li>
+                        <li><strong>Text:</strong> Apagar o padrão. Arrastar o <code>output</code> (do nó "AI Agent").</li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 15: Conclusão e Limitações --><div class="slide" data-slide="15">
+            <div class="conteudo-slide">
+                <h1>✅ 14. Conclusão e Limitações</h1>
+                <h2>O que fizemos:</h2>
+                <ul>
+                    <li>Configuramos um ambiente Docker completo (n8n, WAHA, Redis).</li>
+                    <li>Conectamos o WhatsApp ao n8n via Webhook.</li>
+                    <li>Usamos o Google Gemini para gerar respostas inteligentes.</li>
+                    <li>Adicionamos memória (Redis) para conversas contextuais.</li>
+                    <li>Enviamos a resposta de volta ao usuário.</li>
+                </ul>
+                <h2>Limitações Atuais:</h2>
+                <ul>
+                    <li>O workflow está rodando <strong>localmente</strong>.</li>
+                    <li>Ele não pode receber webhooks externos (apenas da sua rede local).</li>
+                    <li>Para produção, o n8n precisaria estar hospedado em um servidor público (VPS).</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navegação --><button id="btn-anterior" class="btn-nav">&lt;</button>
+    <button id="btn-proximo" class="btn-nav">&gt;</button>
+    
+    <!-- Contador --><div class="contador-slides" id="contador">1 / 15</div>
+
+    <!-- O JavaScript que controla a navegação --><script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const btnAnterior = document.getElementById('btn-anterior');
+            const btnProximo = document.getElementById('btn-proximo');
+            const contador = document.getElementById('contador');
+            let slideAtual = 0;
+            const totalSlides = slides.length;
+
+            // Função para mostrar o slide correto
+            function mostrarSlide(indice) {
+                // Esconde o slide atual
+                slides[slideAtual].classList.remove('ativo');
+                
+                // Define o novo slide
+                slideAtual = (indice + totalSlides) % totalSlides;
+                
+                // Mostra o novo slide
+                slides[slideAtual].classList.add('ativo');
+                
+                // Atualiza o contador
+                contador.textContent = `${slideAtual + 1} / ${totalSlides}`;
+            }
+
+            // Event Listeners para os botões
+            btnProximo.addEventListener('click', () => {
+                mostrarSlide(slideAtual + 1);
+            });
+
+            btnAnterior.addEventListener('click', () => {
+                mostrarSlide(slideAtual - 1);
+            });
+
+            // Event Listeners para o teclado (setas)
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+                    // Próximo slide
+                    mostrarSlide(slideAtual + 1);
+                } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                    // Slide anterior
+                    mostrarSlide(slideAtual - 1);
+                }
+            });
+
+            // Mostra o primeiro slide ao carregar
+            mostrarSlide(0);
+        });
+    </script>
+</body>
+</html>
