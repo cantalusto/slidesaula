@@ -1,0 +1,12 @@
+# Vercel
+.vercel
+
+# Node modules (caso use algum package futuramente)
+node_modules/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
